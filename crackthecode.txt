@@ -1,0 +1,6 @@
+To enter the suite, you must crack the code puzzle. It is easy. The GSAP puzzle is from
+https://www.creativecodingclub.com/
+
+To crack the code, just click anywhere on the screen, this is mobile friendly as well, to the best of my knowledge.
+
+Grok and I also did a python version, but this version is much better I think.
