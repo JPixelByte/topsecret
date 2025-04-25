@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>pattern opposite directions</title>
+  <link rel="stylesheet" href="./patternlock.css">
+
+<link rel="icon" type="image/jpeg" sizes="200x200" href="images/cryptography_icon.jpg">
+
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<svg id='patternId' xmlns='http://www.w3.org/2000/svg'
+	  viewBox="0 0 500 500"
+	  ><defs><pattern id='a' patternUnits='userSpaceOnUse' width='25' height='50' patternTransform='scale(1) rotate(45) translate(0,100)'><rect x='0' y='0' width='100%' height='100%' fill='black'/><path d='M-.63 0v25h26.25V0zm13.1 6.64a5.88 5.88 0 0 1 5.97 5.86 5.9 5.9 0 0 1-5.94 5.88 5.9 5.9 0 0 1-5.94-5.88 5.89 5.89 0 0 1 5.92-5.86zm.03 23.42A7.5 7.5 0 0 0 5 37.5a7.5 7.5 0 0 0 15 0 7.5 7.5 0 0 0-7.5-7.44zm0 3.13a4.34 4.34 0 0 1 4.38 4.31 4.34 4.34 0 0 1-4.38 4.31 4.34 4.34 0 0 1-4.37-4.31c0-2.38 2-4.31 4.37-4.31z'  stroke-width='3' stroke='none' fill='white'/></pattern></defs><rect width='500' height='250' transform='translate(0,0)' fill='url(#a)'/>
+<rect width='500' height='250' y="249.5" style="transform:scaleX(-1); transform-origin:50% 50%;" fill='url(#a)'/>
+
+</svg>
+
+
+<!-- partial -->
+  <script src='https://unpkg.co/gsap@3/dist/gsap.min.js'></script>
+<script  src="./patternlock.js"></script>
+
+
+</body>
+</html>
