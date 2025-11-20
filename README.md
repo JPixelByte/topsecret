@@ -26,6 +26,6 @@ Background Audio
 Custom Background Images
 Animation Special Effects on the Encryption/Decryption portion
 Quick Start
-git clone https://github.com/yourusername/cipherart.git
+git clone https://github.com/JPixelByte/topsecret.py
 cd cipherart
 python cipher_suite.py
