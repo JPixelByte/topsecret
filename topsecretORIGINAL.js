@@ -25,6 +25,8 @@ const NATO_CODE_DICT = {
     '-': 'Hyphen', ' ': 'Space'
 };
 
+let decodeMatrix = null;
+
 function randInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -46,101 +48,61 @@ function caesarCipher(text, shift, mode) {
     }
 }
 
-// Start of: Matrix cipher
-// ==================== MATRIX CIPHER - FINAL WORKING VERSION ====================
+function generateMatrix() {
+    while (true) {
+        const a = randInt(1, 9), b = randInt(1, 9);
+        const c = randInt(1, 9), d = randInt(1, 9);
+        const det = a * d - b * c;
+        if (det !== 0) return [[a, b], [c, d]];
+    }
+}
 
 function matrixInverse(matrix) {
     const [[a, b], [c, d]] = matrix;
     const det = a * d - b * c;
-    if (Math.abs(det) < 1e-9) throw new Error("Matrix is singular");
     const invDet = 1 / det;
-    return [
-        [Math.round(d * invDet * 100000) / 100000, Math.round(-b * invDet * 100000) / 100000],
-        [Math.round(-c * invDet * 100000) / 100000, Math.round(a * invDet * 100000) / 100000]
-    ];
-}
-
-function generateMatrix(shift) {
-    const s = parseInt(shift) || 3;
-    const hash = (s * 1103515245 + 12345) % 2147483647;
-    const a = (hash % 89) + 5;
-    const b = ((hash * 17) % 97) + 3;
-    const c = ((hash * 31) % 83) + 7;
-    const d = ((hash * 7) % 79) + 4;
-    return [[a, b], [c, d]];
+    return [[d * invDet, -b * invDet], [-c * invDet, a * invDet]];
 }
 
 function matrixCipher(text, shift, mode) {
     try {
-        if (typeof text !== 'string' || text.length === 0) 
-            throw new Error("Text must be non-empty.");
-
+        if (typeof text !== 'string') throw new Error("Text must be a string.");
         shift = parseInt(shift);
-        if (isNaN(shift) || shift < 1) 
-            throw new Error("Shift must be positive integer.");
-
+        if (isNaN(shift) || shift < 0) throw new Error("Shift must be a positive integer.");
         if (mode === "encode") {
-            const encodeMatrix = generateMatrix(shift);
-
-            let shifted = text.split('').map(c => c.charCodeAt(0) + shift);
+            const shifted = text.split('').map(char => char.charCodeAt(0) + shift);
             if (shifted.length % 2 !== 0) shifted.push(46);
-
+            const encodeMatrix = generateMatrix();
             const encoded = [];
             for (let i = 0; i < shifted.length; i += 2) {
-                const x = shifted[i];
-                const y = shifted[i + 1];
-                encoded.push(
-                    Math.round(x * encodeMatrix[0][0] + y * encodeMatrix[0][1]),
-                    Math.round(x * encodeMatrix[1][0] + y * encodeMatrix[1][1])
-                );
+                const pair = [shifted[i], shifted[i + 1]];
+                const result = [
+                    pair[0] * encodeMatrix[0][0] + pair[1] * encodeMatrix[0][1],
+                    pair[0] * encodeMatrix[1][0] + pair[1] * encodeMatrix[1][1]
+                ];
+                encoded.push(...result);
             }
-
-            //return `MATRIX:${shift}:${encoded.join(',')}`;
-            return `${shift}:${encoded.join(',')}`;
-        } 
-        else { // decode
-            let input = text.trim();
-            if (!input.startsWith("MATRIX:")) {
-                //input = `MATRIX:${shift}:${input}`;
-                input = `${shift}:${input}`;
-            }
-
-            const parts = input.split(':');
-            const storedShift = parseInt(parts[1]);
-            const numbersStr = parts[2] || "";
-            const numbers = numbersStr.split(',').map(n => parseFloat(n));
-
-            if (numbers.length % 2 !== 0 || numbers.some(isNaN)) 
-                throw new Error("Corrupted Matrix data.");
-
-            const encodeMatrix = generateMatrix(storedShift);
-            const decodeMatrix = matrixInverse(encodeMatrix);
-
+            decodeMatrix = matrixInverse(encodeMatrix);
+            return encoded.join(',');
+        } else {
+            if (!decodeMatrix) throw new Error("Decode matrix not set. Encode first.");
+            const numbers = text.split(',').map(Number);
+            if (numbers.length % 2 !== 0) throw new Error("Need an even number of values.");
             let decoded = '';
             for (let i = 0; i < numbers.length; i += 2) {
-                const x = numbers[i];
-                const y = numbers[i + 1];
-                const origX = Math.round(x * decodeMatrix[0][0] + y * decodeMatrix[0][1]);
-                const origY = Math.round(x * decodeMatrix[1][0] + y * decodeMatrix[1][1]);
-                decoded += String.fromCharCode(origX) + String.fromCharCode(origY);
+                const pair = [numbers[i], numbers[i + 1]];
+                const result = [
+                    pair[0] * decodeMatrix[0][0] + pair[1] * decodeMatrix[0][1],
+                    pair[0] * decodeMatrix[1][0] + pair[1] * decodeMatrix[1][1]
+                ];
+                decoded += String.fromCharCode(Math.round(result[0])) + String.fromCharCode(Math.round(result[1]));
             }
-
-            return decoded.replace(/\./g, '')
-                          .split('')
-                          .map(c => String.fromCharCode(c.charCodeAt(0) - storedShift))
-                          .join('');
+            return decoded.split('').map(char => char === '.' ? '' : String.fromCharCode(char.charCodeAt(0) - shift)).join('');
         }
     } catch (e) {
-        console.error(e);
         return `Error in Matrix Cipher: ${e.message}`;
     }
 }
-
-// End of: Matrix Cipher
-
-
-
-
 function separateMorse(text) {
     const keys = Object.keys(MORSE_CODE_DICT);
     const vals = Object.values(MORSE_CODE_DICT);
