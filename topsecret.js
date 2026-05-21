@@ -49,6 +49,7 @@ function caesarCipher(text, shift, mode) {
 // Start of: Matrix cipher
 // ==================== MATRIX CIPHER - FINAL WORKING VERSION ====================
 
+
 function matrixInverse(matrix) {
     const [[a, b], [c, d]] = matrix;
     const det = a * d - b * c;
@@ -95,25 +96,18 @@ function matrixCipher(text, shift, mode) {
                 );
             }
 
-            //return `MATRIX:${shift}:${encoded.join(',')}`;
-            return `${shift}:${encoded.join(',')}`;
+            return encoded.join(',');           // ← Minimal output (just numbers)
         } 
         else { // decode
-            let input = text.trim();
-            if (!input.startsWith("MATRIX:")) {
-                //input = `MATRIX:${shift}:${input}`;
-                input = `${shift}:${input}`;
-            }
+            let input = text.trim().replace(/\s/g, ''); // clean spaces
 
-            const parts = input.split(':');
-            const storedShift = parseInt(parts[1]);
-            const numbersStr = parts[2] || "";
-            const numbers = numbersStr.split(',').map(n => parseFloat(n));
+            // IMPORTANT: User must set the same Shift value in the input box for decode
+            const numbers = input.split(',').map(n => parseFloat(n));
 
             if (numbers.length % 2 !== 0 || numbers.some(isNaN)) 
-                throw new Error("Corrupted Matrix data.");
+                throw new Error("Corrupted data. Copy all numbers and set correct Shift.");
 
-            const encodeMatrix = generateMatrix(storedShift);
+            const encodeMatrix = generateMatrix(shift);   // uses the Shift box
             const decodeMatrix = matrixInverse(encodeMatrix);
 
             let decoded = '';
@@ -127,7 +121,7 @@ function matrixCipher(text, shift, mode) {
 
             return decoded.replace(/\./g, '')
                           .split('')
-                          .map(c => String.fromCharCode(c.charCodeAt(0) - storedShift))
+                          .map(c => String.fromCharCode(c.charCodeAt(0) - shift))
                           .join('');
         }
     } catch (e) {
@@ -136,7 +130,7 @@ function matrixCipher(text, shift, mode) {
     }
 }
 
-// End of: Matrix Cipher
+
 
 
 
