@@ -1,8 +1,8 @@
 /*jshint esversion: 6 */
 
 const cipherLogo = `
-C̶a̶e̶s̶a̶r̶ C̶i̶p̶h̶e̶r̶ C̶r̶y̶p̶t̶o̶g̶r̶a̶p̶h̶y̶
-🅲🅰🅴🆂🅰🆁 🅲🅸🅿🅷🅴🆁 🅲🆁🆈🅿🆃🅾🅶🆁🅰🅿🅷🆈
+CÌ¶aÌ¶eÌ¶sÌ¶aÌ¶rÌ¶ CÌ¶iÌ¶pÌ¶hÌ¶eÌ¶rÌ¶ CÌ¶rÌ¶yÌ¶pÌ¶tÌ¶oÌ¶gÌ¶rÌ¶aÌ¶pÌ¶hÌ¶yÌ¶
+ðŸ…²ðŸ…°ðŸ…´ðŸ†‚ðŸ…°ðŸ† ðŸ…²ðŸ…¸ðŸ…¿ðŸ…·ðŸ…´ðŸ† ðŸ…²ðŸ†ðŸ†ˆðŸ…¿ðŸ†ƒðŸ…¾ðŸ…¶ðŸ†ðŸ…°ðŸ…¿ðŸ…·ðŸ†ˆ
 143 162 171 160 164 157 147 162 141 160 150 171
 `;
 
@@ -96,7 +96,7 @@ function matrixCipher(text, shift, mode) {
                 );
             }
 
-            return encoded.join(',');           // ← Minimal output (just numbers)
+            return encoded.join(',');           // â† Minimal output (just numbers)
         } 
         else { // decode
             let input = text.trim().replace(/\s/g, ''); // clean spaces
